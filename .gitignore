@@ -25,3 +25,6 @@ yarn-debug.log*
 !.vscode/extensions.json
 !.vscode/settings.json
 *.swp
+
+# exploratory / non-shipped scaffolds
+genai/
