@@ -27,4 +27,3 @@ yarn-debug.log*
 *.swp
 
 # exploratory / non-shipped scaffolds
-genai/
