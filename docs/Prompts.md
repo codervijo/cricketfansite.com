@@ -47,5 +47,45 @@
 >      bash -lc 'export PATH=/root/.volta/bin:$PATH && pnpm install'
 >    ```
 > 3. **No stray gitlinks.** If a sub-directory contains its own `.git/` (e.g. an experimental scaffold under `genai/`), `git add` records it as a submodule (mode 160000) without a matching `.gitmodules` entry — Cloudflare's recursive clone then aborts with *"error occurred while updating repository submodules"*. Either `git rm --cached <path>` to drop the gitlink, or add the directory to `.gitignore` before staging.
+> 4. **Do NOT ship `public/_redirects` with `/* /index.html 200`** for SPA fallback. Cloudflare's new Workers Static Assets validator rejects it as an infinite-loop rule (code 10021) because the destination matches the source glob. Cloudflare's Vite preset already serves `index.html` for unmatched routes, so no `_redirects` is needed. If for some reason it isn't auto-handling, ship a `wrangler.jsonc` with `assets.not_found_handling = "single-page-application"` instead.
 >
 > **Output:** write all files to disk. Don't print contents in chat unless asked. Confirm `make run proj=<project>` and the Cloudflare deploy both succeed before declaring done.
+
+## 2026-04-28 — Favicon
+> Create a brand-consistent favicon for the project. Output three files in `public/`:
+> - `favicon.svg` — vector primary. A recognisable mark on a brand-coloured rounded square so it reads as a logo at 16×16, not just an outline. Use the project's MUI theme primary as the background.
+> - `favicon.ico` — multi-size legacy fallback. Generate from the SVG via ImageMagick: `convert -background none -density 1024 favicon.svg -define icon:auto-resize=64,48,32,16 favicon.ico`.
+> - `apple-touch-icon.png` — 180×180 PNG for iOS home-screen. `convert -background none -density 1024 -resize 180x180 favicon.svg apple-touch-icon.png`.
+>
+> Wire all three into `index.html`:
+> ```html
+> <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+> <link rel="alternate icon" type="image/x-icon" href="/favicon.ico" />
+> <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+> ```
+> Vite copies `public/` to the deploy root, so no extra config is needed. Verify the rendered PNG visually before committing — favicons that look fine at large sizes can be unreadable at 16×16.
+
+## 2026-04-28 — Sitemap, robots.txt, SEO baseline
+> Add automatic sitemap generation, a static robots.txt, and the SEO essentials needed to submit the site to Google.
+>
+> 1. **`scripts/generate-sitemap.mjs`** (ESM, no deps) — reads the route list. Static routes are hardcoded; dynamic routes derived from `src/data/*.json` (e.g. one entry per team in `teams.json`). Writes `dist/sitemap.xml`. Each `<url>` includes `<loc>`, `<lastmod>` (today, ISO `YYYY-MM-DD`), `<changefreq>`, `<priority>`. Site URL configurable via `SITE_URL` env, defaulting to the production hostname (e.g. `https://cricketfansite.com`).
+> 2. **`package.json`** — wire into the build script so every Cloudflare deploy regenerates with a fresh `lastmod`:
+>    ```json
+>    "build": "vite build && node scripts/generate-sitemap.mjs"
+>    ```
+> 3. **`public/robots.txt`** — static, three lines: `User-agent: *` / `Allow: /` / `Sitemap: https://<host>/sitemap.xml`.
+> 4. **Do NOT** create `public/_redirects` with `/* /index.html 200` for SPA fallback — Cloudflare's Workers Static Assets validator rejects it (see scaffold prompt gotcha #4). The Vite preset handles SPA routing without it.
+> 5. **Verify** with a Docker-driven build before pushing:
+>    ```
+>    docker exec -w /usr/src/app/<project> <sites1-container> \
+>      bash -lc 'export PATH=/root/.volta/bin:$PATH && pnpm build'
+>    head -20 dist/sitemap.xml; cat dist/robots.txt
+>    ```
+>
+> **Beyond this baseline (roadmap, not implemented yet):**
+> - Pre-rendering / SSG (`vite-react-ssg`, `vite-plugin-prerender`, or `react-snap`) — single highest-leverage SEO improvement for a React SPA, since Googlebot's JS execution is slower and less reliable than HTML.
+> - Open Graph + Twitter Card meta tags in the `Head` component.
+> - `<link rel="canonical">` per page (only meaningful with pre-rendering).
+> - JSON-LD structured data: `WebSite` everywhere, `BreadcrumbList` on nested pages, `SportsTeam` per team page.
+> - Google Search Console + Bing Webmaster Tools verification, then submit `/sitemap.xml` in both.
+> - Analytics (GA4 / Cloudflare Web Analytics / Plausible) before promoting the site.
