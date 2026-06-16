@@ -1,31 +1,15 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import url from 'node:url';
+import { routes } from './routes.mjs';
 
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, '..');
 const OUT_DIR = path.join(ROOT, 'dist');
 const SITE = (process.env.SITE_URL || 'https://cricketfansite.com').replace(/\/$/, '');
 
-const teams = JSON.parse(
-  fs.readFileSync(path.join(ROOT, 'src', 'data', 'teams.json'), 'utf8'),
-);
-
-const staticRoutes = [
-  { path: '/', priority: '1.0', changefreq: 'weekly' },
-  { path: '/ipl', priority: '0.9', changefreq: 'weekly' },
-  { path: '/ipl/table', priority: '0.9', changefreq: 'daily' },
-  { path: '/ipl/calculators', priority: '0.8', changefreq: 'monthly' },
-  { path: '/ipl/nrr', priority: '0.8', changefreq: 'monthly' },
-];
-const teamRoutes = teams.map((t) => ({
-  path: `/ipl/qualify/${t.id}`,
-  priority: '0.7',
-  changefreq: 'daily',
-}));
-
 const today = new Date().toISOString().split('T')[0];
-const all = [...staticRoutes, ...teamRoutes];
+const all = routes;
 
 const body = all
   .map(

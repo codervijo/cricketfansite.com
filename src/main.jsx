@@ -1,31 +1,30 @@
 import React from 'react';
-import ReactDOM from 'react-dom/client';
+import { hydrateRoot, createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
-import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
+import { ThemeProvider, CssBaseline } from '@mui/material';
+import { theme } from './theme.js';
+import { HeadContext } from './head-context.js';
 import App from './App.jsx';
 
-const theme = createTheme({
-  palette: {
-    primary: { main: '#0b3d91' },
-    secondary: { main: '#ff6f00' },
-    background: { default: '#fafafa' },
-  },
-  typography: {
-    fontFamily:
-      'system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
-    h1: { fontSize: '2rem', fontWeight: 700, lineHeight: 1.2 },
-    h2: { fontSize: '1.4rem', fontWeight: 600, lineHeight: 1.3 },
-  },
-  shape: { borderRadius: 8 },
-});
-
-ReactDOM.createRoot(document.getElementById('root')).render(
+const app = (
   <React.StrictMode>
-    <BrowserRouter>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <App />
-      </ThemeProvider>
-    </BrowserRouter>
-  </React.StrictMode>,
+    <HeadContext.Provider value={{}}>
+      <BrowserRouter>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <App />
+        </ThemeProvider>
+      </BrowserRouter>
+    </HeadContext.Provider>
+  </React.StrictMode>
 );
+
+// Prerendered routes ship server-rendered markup in #root → hydrate it.
+// In dev (and the SPA fallback for non-prerendered routes) #root is empty →
+// plain client render.
+const rootEl = document.getElementById('root');
+if (rootEl.hasChildNodes()) {
+  hydrateRoot(rootEl, app);
+} else {
+  createRoot(rootEl).render(app);
+}

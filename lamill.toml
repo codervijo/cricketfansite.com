@@ -11,6 +11,10 @@ custom_domains = [
     "cricketfansite.com",
 ]
 
+[index]
+indexnow_key = "23a48f93029a3a30ba64cb3ffa3f4813"
+indexnow_enabled = true
+
 [stack]
 framework = "vite-react"
 
