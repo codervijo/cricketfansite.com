@@ -4,13 +4,25 @@ import Head from '../components/Head.jsx';
 import PointsTable from '../components/PointsTable.jsx';
 import ResultsPending from '../components/ResultsPending.jsx';
 import FormatSummary from '../components/FormatSummary.jsx';
+import PlayoffResults from '../components/PlayoffResults.jsx';
 import { activeTournament as t, activeSeason as s } from '../config/tournaments.js';
-import { isComplete, hasResults, standingsRows, seasonLabel, nextSeasonLabel } from '../utils/season.js';
+import {
+  isComplete,
+  hasResults,
+  standingsRows,
+  seasonLabel,
+  nextSeasonLabel,
+  playoffMatches,
+  lastUpdated,
+  formatDate,
+} from '../utils/season.js';
 
 export default function PointsTablePage() {
   const done = isComplete(s);
   const rows = standingsRows(t, s);
   const label = seasonLabel(t, s);
+  const updated = formatDate(lastUpdated(s));
+  const hasPlayoffs = playoffMatches(s).length > 0;
 
   return (
     <>
@@ -48,8 +60,23 @@ export default function PointsTablePage() {
       ) : (
         <ResultsPending label={label} complete={done} />
       )}
+      {updated && (
+        <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1 }}>
+          Last updated {updated}
+        </Typography>
+      )}
+
+      {hasPlayoffs && (
+        <Box sx={{ mt: 4 }}>
+          <Typography variant="h2" gutterBottom>
+            {label} playoff results
+          </Typography>
+          <PlayoffResults tournament={t} season={s} />
+        </Box>
+      )}
+
       {done && (
-        <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
+        <Typography variant="body2" color="text.secondary" sx={{ mt: 4 }}>
           Live standings and per-team qualification scenarios return for{' '}
           {nextSeasonLabel(t, s)}.
         </Typography>

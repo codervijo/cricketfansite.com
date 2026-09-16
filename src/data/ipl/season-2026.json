@@ -5,24 +5,174 @@
   "source": "https://en.wikipedia.org/wiki/2026_Indian_Premier_League",
   "lastUpdated": "2026-09-16",
   "standings": [
-    { "teamId": "rcb", "position": 1, "played": 14, "wins": 9, "losses": 5, "noResults": 0, "points": 18, "nrr": 0.783, "madePlayoffs": true },
-    { "teamId": "gt", "position": 2, "played": 14, "wins": 9, "losses": 5, "noResults": 0, "points": 18, "nrr": 0.695, "madePlayoffs": true },
-    { "teamId": "srh", "position": 3, "played": 14, "wins": 9, "losses": 5, "noResults": 0, "points": 18, "nrr": 0.524, "madePlayoffs": true },
-    { "teamId": "rr", "position": 4, "played": 14, "wins": 8, "losses": 6, "noResults": 0, "points": 16, "nrr": 0.189, "madePlayoffs": true },
-    { "teamId": "pbks", "position": 5, "played": 14, "wins": 7, "losses": 6, "noResults": 1, "points": 15, "nrr": 0.309, "madePlayoffs": false },
-    { "teamId": "dc", "position": 6, "played": 14, "wins": 7, "losses": 7, "noResults": 0, "points": 14, "nrr": -0.651, "madePlayoffs": false },
-    { "teamId": "kkr", "position": 7, "played": 14, "wins": 6, "losses": 7, "noResults": 1, "points": 13, "nrr": -0.147, "madePlayoffs": false },
-    { "teamId": "csk", "position": 8, "played": 14, "wins": 6, "losses": 8, "noResults": 0, "points": 12, "nrr": -0.345, "madePlayoffs": false },
-    { "teamId": "mi", "position": 9, "played": 14, "wins": 4, "losses": 10, "noResults": 0, "points": 8, "nrr": -0.584, "madePlayoffs": false },
-    { "teamId": "lsg", "position": 10, "played": 14, "wins": 4, "losses": 10, "noResults": 0, "points": 8, "nrr": -0.740, "madePlayoffs": false }
+    {
+      "teamId": "rcb",
+      "position": 1,
+      "played": 14,
+      "wins": 9,
+      "losses": 5,
+      "noResults": 0,
+      "points": 18,
+      "nrr": 0.783,
+      "madePlayoffs": true
+    },
+    {
+      "teamId": "gt",
+      "position": 2,
+      "played": 14,
+      "wins": 9,
+      "losses": 5,
+      "noResults": 0,
+      "points": 18,
+      "nrr": 0.695,
+      "madePlayoffs": true
+    },
+    {
+      "teamId": "srh",
+      "position": 3,
+      "played": 14,
+      "wins": 9,
+      "losses": 5,
+      "noResults": 0,
+      "points": 18,
+      "nrr": 0.524,
+      "madePlayoffs": true
+    },
+    {
+      "teamId": "rr",
+      "position": 4,
+      "played": 14,
+      "wins": 8,
+      "losses": 6,
+      "noResults": 0,
+      "points": 16,
+      "nrr": 0.189,
+      "madePlayoffs": true
+    },
+    {
+      "teamId": "pbks",
+      "position": 5,
+      "played": 14,
+      "wins": 7,
+      "losses": 6,
+      "noResults": 1,
+      "points": 15,
+      "nrr": 0.309,
+      "madePlayoffs": false
+    },
+    {
+      "teamId": "dc",
+      "position": 6,
+      "played": 14,
+      "wins": 7,
+      "losses": 7,
+      "noResults": 0,
+      "points": 14,
+      "nrr": -0.651,
+      "madePlayoffs": false
+    },
+    {
+      "teamId": "kkr",
+      "position": 7,
+      "played": 14,
+      "wins": 6,
+      "losses": 7,
+      "noResults": 1,
+      "points": 13,
+      "nrr": -0.147,
+      "madePlayoffs": false
+    },
+    {
+      "teamId": "csk",
+      "position": 8,
+      "played": 14,
+      "wins": 6,
+      "losses": 8,
+      "noResults": 0,
+      "points": 12,
+      "nrr": -0.345,
+      "madePlayoffs": false
+    },
+    {
+      "teamId": "mi",
+      "position": 9,
+      "played": 14,
+      "wins": 4,
+      "losses": 10,
+      "noResults": 0,
+      "points": 8,
+      "nrr": -0.584,
+      "madePlayoffs": false
+    },
+    {
+      "teamId": "lsg",
+      "position": 10,
+      "played": 14,
+      "wins": 4,
+      "losses": 10,
+      "noResults": 0,
+      "points": 8,
+      "nrr": -0.74,
+      "madePlayoffs": false
+    }
   ],
   "playoffs": {
+    "_TODO": "Supply and verify: margin for all four matches, plus date and venue for qualifier1, eliminator and qualifier2. Null fields are simply omitted from the page - nothing is guessed. `teams` and `winner` came from the repo; `eliminationLabel` is what the LOSER of that match is called on their team page.",
     "champion": "rcb",
     "runnerUp": "gt",
-    "qualifier1Winner": "rcb",
-    "eliminatorWinner": "rr",
-    "qualifier2Winner": "gt",
-    "finalVenue": "Narendra Modi Stadium, Ahmedabad",
-    "finalDate": "2026-05-31"
+    "matches": [
+      {
+        "id": "qualifier1",
+        "label": "Qualifier 1",
+        "teams": [
+          "rcb",
+          "gt"
+        ],
+        "winner": "rcb",
+        "margin": null,
+        "date": null,
+        "venue": null,
+        "eliminationLabel": null
+      },
+      {
+        "id": "eliminator",
+        "label": "Eliminator",
+        "teams": [
+          "srh",
+          "rr"
+        ],
+        "winner": "rr",
+        "margin": null,
+        "date": null,
+        "venue": null,
+        "eliminationLabel": "Lost Eliminator"
+      },
+      {
+        "id": "qualifier2",
+        "label": "Qualifier 2",
+        "teams": [
+          "gt",
+          "rr"
+        ],
+        "winner": "gt",
+        "margin": null,
+        "date": null,
+        "venue": null,
+        "eliminationLabel": "Lost Qualifier 2"
+      },
+      {
+        "id": "final",
+        "label": "Final",
+        "teams": [
+          "rcb",
+          "gt"
+        ],
+        "winner": "rcb",
+        "margin": null,
+        "date": "2026-05-31",
+        "venue": "Narendra Modi Stadium, Ahmedabad",
+        "eliminationLabel": "Runners-up"
+      }
+    ]
   }
 }

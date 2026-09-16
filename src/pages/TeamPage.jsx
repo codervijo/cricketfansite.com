@@ -12,7 +12,16 @@ import Head from '../components/Head.jsx';
 import QualificationCalculator from '../components/QualificationCalculator.jsx';
 import { formatNRR } from '../utils/nrr.js';
 import { activeTournament as t, activeSeason as s } from '../config/tournaments.js';
-import { isComplete, hasResults, teamResult, seasonLabel, nextSeasonLabel } from '../utils/season.js';
+import {
+  isComplete,
+  hasResults,
+  teamResult,
+  seasonLabel,
+  nextSeasonLabel,
+  playoffOutcome,
+  lastUpdated,
+  formatDate,
+} from '../utils/season.js';
 
 export default function TeamPage() {
   const { team } = useParams();
@@ -23,6 +32,8 @@ export default function TeamPage() {
   const label = seasonLabel(t, s);
   const next = nextSeasonLabel(t, s);
   const result = teamResult(t, s, info.id);
+  const outcome = playoffOutcome(t, s, info.id);
+  const updated = formatDate(lastUpdated(s));
   const remaining =
     result?.played != null ? Math.max(0, t.format.matchesPerTeam - result.played) : null;
 
@@ -34,7 +45,7 @@ export default function TeamPage() {
             ? `${info.name} (${info.short}) — ${label} Final Standing`
             : `${info.name} (${info.short}) — ${t.short} Playoff Qualification Scenarios`
         }
-        description={metaDescription({ info, label, next, done, result, remaining })}
+        description={metaDescription({ info, label, next, done, result, remaining, outcome })}
       />
       <Stack direction="row" spacing={2} alignItems="center" sx={{ mb: 1, flexWrap: 'wrap' }}>
         <Box sx={{ width: 12, height: 32, bgcolor: info.color, borderRadius: 0.5 }} />
@@ -55,11 +66,16 @@ export default function TeamPage() {
             <Stat label="Points" value={result.points} />
             <Stat label="NRR" value={formatNRR(result.nrr)} />
             {done ? (
-              <Stat label="Playoffs" value={result.madePlayoffs ? 'Qualified' : 'Missed out'} />
+              <Stat label="Playoff outcome" value={outcome ?? '—'} />
             ) : (
               <Stat label="Remaining" value={remaining} />
             )}
           </Stack>
+          {updated && (
+            <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1.5 }}>
+              Last updated {updated}
+            </Typography>
+          )}
         </Paper>
       ) : (
         <Alert severity="warning" variant="outlined" sx={{ mb: 3 }}>
@@ -109,9 +125,10 @@ export default function TeamPage() {
 }
 
 // Never states a figure that isn't in the verified season data.
-function metaDescription({ info, label, next, done, result, remaining }) {
+function metaDescription({ info, label, next, done, result, remaining, outcome }) {
   if (done && result) {
-    return `${info.name} finished ${ordinal(result.position)} in ${label} with ${result.points} points and an NRR of ${formatNRR(result.nrr)}. Qualification scenarios return for ${next}.`;
+    const tail = outcome ? ` — ${outcome}.` : '.';
+    return `${info.name} finished ${ordinal(result.position)} in ${label} with ${result.points} points and an NRR of ${formatNRR(result.nrr)}${tail} Qualification scenarios return for ${next}.`;
   }
   if (done) {
     return `${info.name}'s ${label} season page. The final league table is being confirmed against the official source; qualification scenarios return for ${next}. Free playoff and net run rate calculators anytime.`;

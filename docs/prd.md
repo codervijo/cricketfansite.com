@@ -58,10 +58,29 @@ Open:
       rather than a client-side bounce to the table. That is the correct
       status for a URL that was never valid, but it is a behaviour change.
 
+- [ ] Trailing-slash canonicalisation: `/ipl/table` answers HTTP 308 to
+      `/ipl/table/` before serving 200, but the sitemap lists the non-slash
+      form, so every sitemap URL costs a redirect hop. Fix by either
+      emitting trailing slashes in the sitemap, or setting
+      `html_handling: "drop-trailing-slash"` in `wrangler.jsonc` so the
+      non-slash form (what the app's own links use) is served directly.
+      The second matches the app; needs an operator call.
 - [ ] Delete `src/data/matches.json` — 8 fabricated matches, imported by
       nothing, contradicts the real season data
-- [ ] Off-season content, once the shape is decided (the `playoffs` block
-      in the season data file is filled but no page consumes it yet)
+- [x] Playoff results on `/ipl/table` (2026-09-16) — Q1 / Eliminator /
+      Q2 / Final with teams, winner and margin, plus a "Champions" line,
+      all driven by the `playoffs` block in the season data file. Team
+      pages replaced the boolean "Playoffs: Qualified" with a derived
+      outcome (Champions / Runners-up / Lost Qualifier 2 / Lost
+      Eliminator / Did not qualify), which also appears in each page's
+      meta description. "Last updated" added to the table and team pages.
+- [ ] **Operator to supply:** winning margins for all four playoff
+      matches, and the date + venue for Qualifier 1, the Eliminator and
+      Qualifier 2. These are `null` in
+      `src/data/ipl/season-2026.json § playoffs.matches` and render as an
+      em dash — nothing is guessed. The final's date and venue were
+      already in the repo.
+- [ ] Off-season content, once the shape is decided
 
 ## Problem
 

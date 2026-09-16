@@ -195,3 +195,40 @@ The Astro siblings already on `404-page` mode get `dist/404.html` free from
 `src/pages/404.astro`; this Vite + React site renders it at the end of
 `scripts/prerender.mjs`.
 
+## 2026-09-16 — Playoff results, playoff outcome per team, deploy check
+> Small follow-up updates to cricketfansite.com:
+>
+> 1. Add IPL 2026 playoff results to /ipl/table, below the league table:
+>    Qualifier 1, Eliminator, Qualifier 2, Final — teams, winner, margin.
+>    Add a "Champions: Royal Challengers Bengaluru" line. Put the data in the
+>    season data file, not hardcoded in the template. I will supply/verify all
+>    results — leave clearly marked TODOs for anything not already in the repo.
+>    Do NOT invent margins or results.
+>
+> 2. Team season pages (/ipl/qualify/{team}): replace the boolean "Playoffs:
+>    Qualified" with a playoff outcome field: Champions / Runners-up /
+>    Lost Qualifier 2 / Lost Eliminator / Did not qualify. Update each page's
+>    meta description to include the outcome.
+>
+> 3. Confirm the homepage and /ipl/nrr are deployed with the season-complete
+>    changes (homepage must not show 10-played standings or "can your team still
+>    qualify"). Report what's actually being served in production; purge the
+>    CDN cache if one is in use.
+>
+> 4. Add "Last updated" date to /ipl/table and team pages, from the data file.
+>
+> Run build and tests. Report files changed and the data I need to verify.
+
+**Outcome:** production confirmed current; no CDN purge needed (HTML is served
+`cf-cache-status: DYNAMIC`, `max-age=0, must-revalidate`). Playoff pairings were
+derivable from the verified standings plus the standard four-team double-chance
+bracket, and the winners were already in the repo, so only margins and three
+dates/venues are outstanding — left `null` and rendered as an em dash. Team
+outcome is derived from the data, not hardcoded: each playoff match carries an
+`eliminationLabel` naming what its loser is called.
+
+Also noted while probing production: `/ipl/table` and friends answer HTTP 308 to
+the trailing-slash form before serving 200, while the sitemap lists the
+non-slash URLs — so every sitemap entry costs a redirect hop. Not yet fixed; see
+`docs/prd.md`.
+
