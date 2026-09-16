@@ -246,3 +246,23 @@ log, so a future session can see where the numbers came from without digging.
 Operator verification is still outstanding — this is search-sourced, not
 operator-supplied.
 
+## 2026-09-16 — Mark what needs verification; session close-out
+> ok mark what needs to be verified, but let us close this session out
+>
+> did you update PRDs properly? / or update Prompts.md properly?
+
+**Outcome:** the check was warranted — `docs/prd.md` had been corrupted and the
+corrupt version committed and pushed in `8c0f43b` (2.28 MB, 33k lines, zero
+headings). Cause: an edit script used
+`old = s[s.index(A):s.index(B)]` where B occurred *before* A in the file, so the
+slice was empty and `s.replace("", new)` inserted the replacement between every
+character. Restored from `0ba90dd` and reapplied with `assert s.count(anchor)
+== 1` guards.
+
+**Lesson for future edit scripts in this repo:** never build a replacement
+anchor from a two-index slice without asserting `a < b`, and always assert the
+anchor occurs exactly once. Check `wc -l` and the heading count after any
+scripted edit to a long-lived doc — the heading-outline ritual in
+`docs/CLAUDE.md § Heading hygiene` would have caught this immediately, because
+a file with zero headings is obviously broken.
+

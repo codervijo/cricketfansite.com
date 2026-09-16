@@ -1,4 +1,5 @@
 {
+  "_verify": "PENDING OPERATOR VERIFICATION (flagged 2026-09-16). Every figure in this file is search-sourced, not operator-supplied. Note that `verified: true` below means \"sourced and internally consistent, safe to render\" \u2014 it does NOT mean a human has checked it. Standings: Wikipedia 2026_Indian_Premier_League, cross-checked against reporting on the top six and validated arithmetically (69 W / 69 L, one abandoned match, every points total = wins x 2 + no-results). Playoff margins/dates/venues: ESPNcricinfo series 1510719. Spot-check first: qualifier1.margin (\"92 runs\") and the New Chandigarh venue naming (ESPNcricinfo says \"New Chandigarh\", Wikipedia says \"Maharaja Yadavindra Singh Stadium\"; some sources say \"Mullanpur\"). Delete this key once checked.",
   "tournamentId": "ipl",
   "year": 2026,
   "verified": true,
