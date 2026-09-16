@@ -13,19 +13,27 @@ import {
 } from '@mui/material';
 import { formatNRR } from '../utils/nrr.js';
 
-function rankColor(idx) {
-  return idx < 4 ? 'success' : 'default';
-}
+// Tournament-agnostic standings table. `rows` are already ordered by the
+// caller; `playoffSpots` drives the qualified-rank highlight, and
+// `qualifiedKey` lets a finished season highlight who actually advanced
+// instead of inferring it from rank.
+export default function PointsTable({
+  rows,
+  basePath,
+  playoffSpots = 0,
+  qualifiedKey = null,
+  ariaLabel = 'Points table',
+}) {
+  const qualified = (row, idx) =>
+    qualifiedKey ? row[qualifiedKey] === true : playoffSpots > 0 && idx < playoffSpots;
 
-export default function PointsTable({ teams }) {
-  const sorted = [...teams].sort((a, b) => {
-    if (b.points !== a.points) return b.points - a.points;
-    return b.nrr - a.nrr;
-  });
+  // Only shown when the competition actually had abandoned matches — otherwise
+  // W + L = P and the column is noise.
+  const showNoResults = rows.some((r) => Number(r.noResults) > 0);
 
   return (
     <TableContainer component={Paper} variant="outlined">
-      <Table size="small" aria-label="IPL points table">
+      <Table size="small" aria-label={ariaLabel}>
         <TableHead>
           <TableRow>
             <TableCell>#</TableCell>
@@ -33,22 +41,27 @@ export default function PointsTable({ teams }) {
             <TableCell align="right">P</TableCell>
             <TableCell align="right">W</TableCell>
             <TableCell align="right">L</TableCell>
+            {showNoResults && <TableCell align="right">NR</TableCell>}
             <TableCell align="right">Pts</TableCell>
             <TableCell align="right">NRR</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {sorted.map((t, idx) => (
+          {rows.map((t, idx) => (
             <TableRow key={t.id} hover>
               <TableCell>
-                <Chip size="small" label={idx + 1} color={rankColor(idx)} />
+                <Chip
+                  size="small"
+                  label={t.position ?? idx + 1}
+                  color={qualified(t, idx) ? 'success' : 'default'}
+                />
               </TableCell>
               <TableCell>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                   <Box sx={{ width: 6, height: 24, bgcolor: t.color, borderRadius: 0.5 }} />
                   <Link
                     component={RouterLink}
-                    to={`/ipl/qualify/${t.id}`}
+                    to={`${basePath}/qualify/${t.id}`}
                     underline="hover"
                   >
                     {t.name}
@@ -58,6 +71,7 @@ export default function PointsTable({ teams }) {
               <TableCell align="right">{t.played}</TableCell>
               <TableCell align="right">{t.wins}</TableCell>
               <TableCell align="right">{t.losses}</TableCell>
+              {showNoResults && <TableCell align="right">{t.noResults ?? 0}</TableCell>}
               <TableCell align="right">
                 <strong>{t.points}</strong>
               </TableCell>

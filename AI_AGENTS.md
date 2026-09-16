@@ -11,12 +11,13 @@ Tools-first IPL companion site. Ships a points table, a playoff qualification ca
 - React Router v6 (client-side routing, including dynamic `/ipl/qualify/:team`)
 
 ## Project structure
-- `src/components/` — reusable UI (PointsTable, QualificationCalculator, NRRCalculator, Navbar, Footer, Head)
+- `src/components/` — reusable UI (PointsTable, QualificationCalculator, NRRCalculator, RunRateCalculator, RequiredRunRateCalculator, SeasonBanner, ResultsPending, FormatSummary, Navbar, Footer, Head)
 - `src/pages/` — route components (Home, IPLHub, PointsTable, Calculators, NRR, Team, NotFound)
 - `src/layouts/` — shared shells (MainLayout)
 - `src/routes/` — router config (`index.jsx`)
-- `src/data/` — static JSON (`teams.json`, `matches.json`)
-- `src/utils/` — pure helpers (`nrr.js`, `qualification.js`)
+- `src/config/` — `season.json` (THE season switch: tournament + year + `live`/`complete`/`upcoming`) and `tournaments.js` (per-tournament format: teams, matches per team, playoff spots, points per win)
+- `src/data/<tournament>/` — static JSON per tournament: `teams.json` (identity only — id, name, short, colour) and `season-<year>.json` (results; rendered only when its `verified` flag is true)
+- `src/utils/` — pure helpers (`nrr.js`, `qualification.js`, `season.js`)
 - `docs/` — PRD and prompt history
 - `genai/` — exploratory scaffolds from prior tooling (not part of the shipped app)
 
@@ -71,7 +72,10 @@ Do not bypass the Makefile for CI-equivalent runs. If a step needs to happen out
 - Each page sets its own `<Head title="…" description="…" />` and renders an `<h1>` for SEO.
 - Internal links use React Router's `Link` (or MUI `Link` with `component={RouterLink}`), never raw `<a href>` for in-app routes.
 - Pure logic (NRR formula, qualification math) lives in `src/utils/` and is imported by both generic and team-specific pages.
-- Team pages are driven by `teams.json` keyed by `id` (lowercase short code, e.g. `csk`, `mi`).
+- Team pages are driven by `src/data/<tournament>/teams.json` keyed by `id` (lowercase short code, e.g. `csk`, `mi`).
+- Season state is read from `src/config/season.json` and nowhere else. Pages branch on the helpers in `src/utils/season.js` (`isComplete`, `hasResults`), never on a hardcoded year or status.
+- Results are rendered only when the season data file's `verified` flag is true. An unverified or unfilled season shows a labelled gap (`ResultsPending`), never placeholder numbers — the site must not assert a standing, a result or a champion it cannot source.
+- Components and `src/utils/` take tournament config as input (format, team list, base path). Don't bake IPL assumptions into them; adding WTC / BBL / SA20 / MLC should mean a new config entry plus data files, not component edits.
 
 ## Out of scope / don't touch
 -

@@ -8,7 +8,7 @@ import {
   Alert,
   Box,
 } from '@mui/material';
-import { qualifyStatus, SAFE_POINTS, TOTAL_MATCHES } from '../utils/qualification.js';
+import { qualifyStatus, DEFAULT_FORMAT } from '../utils/qualification.js';
 import { formatNRR } from '../utils/nrr.js';
 
 const statusSeverity = {
@@ -18,20 +18,28 @@ const statusSeverity = {
   eliminated: 'error',
 };
 
-export default function QualificationCalculator({ initial, heading = 'Playoff Qualification Calculator' }) {
+// `format` is a tournament format object (src/config/tournaments.js). The
+// calculator itself is tournament-agnostic — it only reads matchesPerTeam,
+// pointsPerWin and safePoints.
+export default function QualificationCalculator({
+  initial,
+  format = DEFAULT_FORMAT,
+  heading = 'Playoff Qualification Calculator',
+}) {
   const [points, setPoints] = useState(initial?.points ?? 0);
-  const [remaining, setRemaining] = useState(initial?.remaining ?? TOTAL_MATCHES);
+  const [remaining, setRemaining] = useState(initial?.remaining ?? format.matchesPerTeam);
   const [nrr, setNrr] = useState(initial?.nrr ?? 0);
-  const [target, setTarget] = useState(SAFE_POINTS);
+  const [target, setTarget] = useState(format.safePoints);
 
   const result = useMemo(
     () =>
       qualifyStatus({
         points: Number(points) || 0,
         remaining: Number(remaining) || 0,
-        target: Number(target) || SAFE_POINTS,
+        target: Number(target) || format.safePoints,
+        pointsPerWin: format.pointsPerWin,
       }),
-    [points, remaining, target],
+    [points, remaining, target, format.safePoints, format.pointsPerWin],
   );
 
   return (
@@ -61,7 +69,7 @@ export default function QualificationCalculator({ initial, heading = 'Playoff Qu
             value={remaining}
             onChange={(e) => setRemaining(e.target.value)}
             fullWidth
-            inputProps={{ min: 0, max: TOTAL_MATCHES }}
+            inputProps={{ min: 0, max: format.matchesPerTeam }}
           />
           <TextField
             label="Current NRR (optional)"

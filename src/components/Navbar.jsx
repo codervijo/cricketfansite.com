@@ -19,7 +19,7 @@ const links = [
   { to: '/ipl', label: 'IPL' },
   { to: '/ipl/table', label: 'Points Table' },
   { to: '/ipl/calculators', label: 'Qualify Calc' },
-  { to: '/ipl/nrr', label: 'NRR Calc' },
+  { to: '/ipl/nrr', label: 'NRR Calculator' },
 ];
 
 export default function Navbar() {

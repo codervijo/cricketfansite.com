@@ -10,7 +10,7 @@ import {
 } from '@mui/material';
 import { calculateNRR, formatNRR } from '../utils/nrr.js';
 
-export default function NRRCalculator() {
+export default function NRRCalculator({ heading = 'Net Run Rate Calculator' }) {
   const [runsFor, setRunsFor] = useState('');
   const [oversFor, setOversFor] = useState('');
   const [runsAgainst, setRunsAgainst] = useState('');
@@ -29,12 +29,15 @@ export default function NRRCalculator() {
   return (
     <Card variant="outlined">
       <CardContent>
-        <Typography variant="h2" gutterBottom>
-          Net Run Rate Calculator
-        </Typography>
+        {heading && (
+          <Typography variant="h2" gutterBottom>
+            {heading}
+          </Typography>
+        )}
         <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-          NRR = (runs scored / overs faced) − (runs conceded / overs bowled).
-          Enter overs in cricket notation (e.g. <code>19.5</code> = 19 overs, 5 balls).
+          NRR = (runs scored ÷ overs faced) − (runs conceded ÷ overs bowled). Use
+          season totals for a table NRR, or a single innings for one match. Enter
+          overs in cricket notation (e.g. <code>19.5</code> = 19 overs, 5 balls).
         </Typography>
         <Stack spacing={2}>
           <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>

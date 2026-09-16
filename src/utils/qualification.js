@@ -1,24 +1,32 @@
-// IPL: 10 teams, 14 league matches each, top 4 advance to playoffs.
-// 16 points (8 wins) is the conventional "safe" qualification threshold.
+// Tournament-agnostic qualification math. Callers pass the tournament's format
+// (see src/config/tournaments.js); the defaults below are a plain round-robin
+// two-points-a-win league and exist only so the generic calculator can run
+// before a format is chosen.
 
-export const TOTAL_MATCHES = 14;
-export const SAFE_POINTS = 16;
+export const DEFAULT_FORMAT = {
+  matchesPerTeam: 14,
+  playoffSpots: 4,
+  pointsPerWin: 2,
+  pointsPerNoResult: 1,
+  safePoints: 16,
+};
 
-export function maxPossiblePoints(currentPoints, remaining) {
-  return Number(currentPoints) + Number(remaining) * 2;
+export function maxPossiblePoints(currentPoints, remaining, pointsPerWin = DEFAULT_FORMAT.pointsPerWin) {
+  return Number(currentPoints) + Number(remaining) * Number(pointsPerWin);
 }
 
-export function winsNeeded(currentPoints, target = SAFE_POINTS) {
+export function winsNeeded(currentPoints, target, pointsPerWin = DEFAULT_FORMAT.pointsPerWin) {
   const deficit = Math.max(0, Number(target) - Number(currentPoints));
-  return Math.ceil(deficit / 2);
+  return Math.ceil(deficit / Number(pointsPerWin));
 }
 
-export function qualifyStatus({ points, remaining, target = SAFE_POINTS }) {
+export function qualifyStatus({ points, remaining, target, pointsPerWin } = {}) {
   const p = Number(points) || 0;
   const r = Number(remaining) || 0;
-  const t = Number(target) || SAFE_POINTS;
-  const max = maxPossiblePoints(p, r);
-  const need = winsNeeded(p, t);
+  const t = Number(target) || DEFAULT_FORMAT.safePoints;
+  const ppw = Number(pointsPerWin) || DEFAULT_FORMAT.pointsPerWin;
+  const max = maxPossiblePoints(p, r, ppw);
+  const need = winsNeeded(p, t, ppw);
 
   if (p >= t) {
     return {

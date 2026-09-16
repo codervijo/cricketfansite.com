@@ -1,0 +1,28 @@
+{
+  "tournamentId": "ipl",
+  "year": 2026,
+  "verified": true,
+  "source": "https://en.wikipedia.org/wiki/2026_Indian_Premier_League",
+  "lastUpdated": "2026-09-16",
+  "standings": [
+    { "teamId": "rcb", "position": 1, "played": 14, "wins": 9, "losses": 5, "noResults": 0, "points": 18, "nrr": 0.783, "madePlayoffs": true },
+    { "teamId": "gt", "position": 2, "played": 14, "wins": 9, "losses": 5, "noResults": 0, "points": 18, "nrr": 0.695, "madePlayoffs": true },
+    { "teamId": "srh", "position": 3, "played": 14, "wins": 9, "losses": 5, "noResults": 0, "points": 18, "nrr": 0.524, "madePlayoffs": true },
+    { "teamId": "rr", "position": 4, "played": 14, "wins": 8, "losses": 6, "noResults": 0, "points": 16, "nrr": 0.189, "madePlayoffs": true },
+    { "teamId": "pbks", "position": 5, "played": 14, "wins": 7, "losses": 6, "noResults": 1, "points": 15, "nrr": 0.309, "madePlayoffs": false },
+    { "teamId": "dc", "position": 6, "played": 14, "wins": 7, "losses": 7, "noResults": 0, "points": 14, "nrr": -0.651, "madePlayoffs": false },
+    { "teamId": "kkr", "position": 7, "played": 14, "wins": 6, "losses": 7, "noResults": 1, "points": 13, "nrr": -0.147, "madePlayoffs": false },
+    { "teamId": "csk", "position": 8, "played": 14, "wins": 6, "losses": 8, "noResults": 0, "points": 12, "nrr": -0.345, "madePlayoffs": false },
+    { "teamId": "mi", "position": 9, "played": 14, "wins": 4, "losses": 10, "noResults": 0, "points": 8, "nrr": -0.584, "madePlayoffs": false },
+    { "teamId": "lsg", "position": 10, "played": 14, "wins": 4, "losses": 10, "noResults": 0, "points": 8, "nrr": -0.740, "madePlayoffs": false }
+  ],
+  "playoffs": {
+    "champion": "rcb",
+    "runnerUp": "gt",
+    "qualifier1Winner": "rcb",
+    "eliminatorWinner": "rr",
+    "qualifier2Winner": "gt",
+    "finalVenue": "Narendra Modi Stadium, Ahmedabad",
+    "finalDate": "2026-05-31"
+  }
+}

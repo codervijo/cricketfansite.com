@@ -64,3 +64,49 @@ https://search.google.com/search-console directly.
   the sitemap.
 - **Result:** TBD — review 2026-06-06
 - **Learning:** TBD
+
+## 2026-09-16 — off-season mode: de-stale the site, switch to a season-state config
+- **Status:** active
+- **KPI:** indexed-page count and impressions for `/ipl/table` and the 10
+  `/ipl/qualify/{team}` pages; CTR on those team pages
+- **Baseline:** pages were serving prerendered HTML claiming a live mid-season
+  table (every team on 10 played) five months after IPL 2026 ended — e.g. the
+  RCB page's meta description read "8 pts, NRR +0.135, 4 matches left"
+- **Action:** added `src/config/season.json` as a single season-state switch
+  (`live` / `complete` / `upcoming`), set IPL 2026 to `complete`. Removed the
+  mock standings from the repo entirely rather than relabel them as final;
+  standings now come from `src/data/ipl/season-2026.json`, which renders only
+  once its `verified` flag is set. Titles/descriptions, headings and the
+  team-page bodies are season-aware; a site-wide banner states the season is
+  over. Calculators left fully working (evergreen) with stale prefills removed.
+  Sitemap `changefreq` drops from daily to monthly for a finished season and
+  `<lastmod>` on standings pages now tracks the data file, not the build date.
+  Same day, the real IPL 2026 final table was sourced from Wikipedia (cross-checked
+  against reporting on the top six, and arithmetically self-consistent: 69 W / 69 L,
+  one abandoned match, every points total = wins x 2 + no-results) and filled in,
+  so the pages ship real standings rather than the empty state.
+- **Result:** TBD — review 2026-10-14
+- **Learning:** TBD — the open question is whether an honest "final table not
+  published yet" state holds rankings better than stale-but-full pages did.
+  If impressions on `/ipl/qualify/*` collapse before the final data is filled,
+  that argues for filling results the same week a season ends, not months later.
+
+## 2026-09-16 — /ipl/nrr rebuilt as the site's main calculator page
+- **Status:** active
+- **KPI:** impressions and clicks for `/ipl/nrr` on non-seasonal queries
+  ("net run rate calculator", "required run rate", "run rate calculator");
+  secondary: FAQ rich-result appearance in GSC
+- **Baseline:** single-purpose NRR page, ~120 words, no structured data,
+  no coverage of run rate or required run rate
+- **Action:** added Run Rate and Required Run Rate modes as tabs on the same
+  URL, plus H2 explainer sections with a worked example each and a
+  three-question FAQ (NRR formula, all-out innings counting the full quota,
+  base-six overs notation). FAQPage JSON-LD generated from the same array the
+  page renders, so the two cannot drift. Copy is competition-agnostic, not
+  IPL-only. Sitemap priority raised 0.8 -> 0.9.
+- **Hypothesis:** the calculators are the only part of this site that doesn't
+  decay between seasons, so an evergreen page that covers all three rates
+  should out-earn the seasonal table pages over a full year.
+- **Result:** TBD — review 2026-10-14
+- **Learning:** TBD
+

@@ -1,0 +1,6 @@
+{
+  "_comment": "THE season switch. Change status here and the whole site changes mode. status: live | complete | upcoming. Kept as JSON (not .js) so scripts/routes.mjs can read it under plain Node as well as the Vite bundle.",
+  "tournamentId": "ipl",
+  "year": 2026,
+  "status": "complete"
+}

@@ -56,6 +56,16 @@ for (const r of routes) {
     );
   }
 
+  if (head.jsonLd) {
+    // Injected as a real <script> in the static HTML so crawlers see the
+    // structured data without executing the bundle.
+    const ld = JSON.stringify(head.jsonLd).replace(/</g, '\\u003c');
+    page = page.replace(
+      '</head>',
+      `  <script type="application/ld+json" id="route-jsonld">${ld}</script>\n  </head>`,
+    );
+  }
+
   const outDir = r.path === '/' ? DIST : path.join(DIST, r.path);
   fs.mkdirSync(outDir, { recursive: true });
   fs.writeFileSync(path.join(outDir, 'index.html'), page);
