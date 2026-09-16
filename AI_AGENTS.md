@@ -103,7 +103,8 @@ builder at `~/work/projects/builder/`. Common: `make deps`, `make dev`,
 
 ## Deployment info
 
-Cloudflare Pages. Push to `main` triggers an auto-build via the
-`wrangler.jsonc` config; build output is `dist/`. Custom domain
-configured via the CF Pages dashboard.
+Cloudflare Pages. Push to `main` triggers an auto-build; build output is
+`dist/`. There is no wrangler config file in this repo — build settings
+and the custom domain are configured in the CF Pages dashboard. See
+`docs/CLAUDE.md § Conventions` for the SPA-fallback / soft-404 caveat.
 
