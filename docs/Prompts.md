@@ -232,3 +232,17 @@ the trailing-slash form before serving 200, while the sitemap lists the
 non-slash URLs — so every sitemap entry costs a redirect hop. Not yet fixed; see
 `docs/prd.md`.
 
+## 2026-09-16 — Fill the playoff details from search
+> do fill in with the best data you can find from search
+
+**Outcome:** all four playoff matches completed — Q1 RCB by 92 runs (26 May,
+HPCA Stadium, Dharamsala), Eliminator RR by 47 runs (27 May, Maharaja
+Yadavindra Singh International Cricket Stadium, New Chandigarh), Q2 GT by 7
+wickets (29 May, same venue), Final RCB by 5 wickets (31 May, Narendra Modi
+Stadium, Ahmedabad). Sourced from the ESPNcricinfo IPL 2026 match pages
+(series 1510719), with winners cross-checked against Wikipedia. Provenance is
+recorded in `playoffs._source` in the season data file rather than only in this
+log, so a future session can see where the numbers came from without digging.
+Operator verification is still outstanding — this is search-sourced, not
+operator-supplied.
+

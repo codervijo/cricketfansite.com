@@ -117,7 +117,7 @@
     }
   ],
   "playoffs": {
-    "_TODO": "Supply and verify: margin for all four matches, plus date and venue for qualifier1, eliminator and qualifier2. Null fields are simply omitted from the page - nothing is guessed. `teams` and `winner` came from the repo; `eliminationLabel` is what the LOSER of that match is called on their team page.",
+    "_source": "Margins, dates and venues from the ESPNcricinfo IPL 2026 match pages (series 1510719); winners and champion cross-checked against https://en.wikipedia.org/wiki/2026_Indian_Premier_League. Filled 2026-09-16.",
     "champion": "rcb",
     "runnerUp": "gt",
     "matches": [
@@ -129,9 +129,9 @@
           "gt"
         ],
         "winner": "rcb",
-        "margin": null,
-        "date": null,
-        "venue": null,
+        "margin": "92 runs",
+        "date": "2026-05-26",
+        "venue": "HPCA Stadium, Dharamsala",
         "eliminationLabel": null
       },
       {
@@ -142,9 +142,9 @@
           "rr"
         ],
         "winner": "rr",
-        "margin": null,
-        "date": null,
-        "venue": null,
+        "margin": "47 runs",
+        "date": "2026-05-27",
+        "venue": "Maharaja Yadavindra Singh International Cricket Stadium, New Chandigarh",
         "eliminationLabel": "Lost Eliminator"
       },
       {
@@ -155,9 +155,9 @@
           "rr"
         ],
         "winner": "gt",
-        "margin": null,
-        "date": null,
-        "venue": null,
+        "margin": "7 wickets",
+        "date": "2026-05-29",
+        "venue": "Maharaja Yadavindra Singh International Cricket Stadium, New Chandigarh",
         "eliminationLabel": "Lost Qualifier 2"
       },
       {
@@ -168,7 +168,7 @@
           "gt"
         ],
         "winner": "rcb",
-        "margin": null,
+        "margin": "5 wickets",
         "date": "2026-05-31",
         "venue": "Narendra Modi Stadium, Ahmedabad",
         "eliminationLabel": "Runners-up"
