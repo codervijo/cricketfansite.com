@@ -89,3 +89,109 @@
 > - JSON-LD structured data: `WebSite` everywhere, `BreadcrumbList` on nested pages, `SportsTeam` per team page.
 > - Google Search Console + Bing Webmaster Tools verification, then submit `/sitemap.xml` in both.
 > - Analytics (GA4 / Cloudflare Web Analytics / Plausible) before promoting the site.
+
+## 2026-09-16 — Off-season mode: de-stale the site, season-state switch
+> Context: cricketfansite.com is a tools-first IPL site (points table, playoff
+> qualification calculator, NRR calculator, /ipl/qualify/{team} pages). It's
+> September 2026 and IPL 2026 finished months ago, but the site still shows
+> every team at 10 played with "matches remaining" scenarios. That's stale and
+> hurts trust/SEO. Goal of this session: fix the staleness and lay groundwork
+> for off-season content. Small, safe updates only — no new page types yet.
+>
+> **Step 0 — Recon (report back before editing):**
+> - Identify the stack, build/deploy process, and where standings data lives
+>   (hardcoded, JSON, fetched?).
+> - Tell me whether the current table data looks like real IPL 2026 data or
+>   placeholder/mock data (all teams on exactly 10 played is suspicious).
+> - List every route and its title/meta description.
+>
+> **Step 1 — Season state switch:**
+> - Add a single config value (e.g. season status: "live" | "complete" |
+>   "upcoming") plus season year, so the whole site changes mode from one place.
+> - Set it to "complete" for IPL 2026.
+> - DO NOT invent final standings, playoff results, or the champion. If real
+>   final data isn't in the repo, add clearly marked TODO placeholders and a
+>   data file I can fill in, and list exactly what fields you need from me.
+>
+> **Step 2 — Behavior when season is "complete":**
+> - Home + /ipl/table: heading becomes "IPL 2026 Final Points Table"; hide
+>   "matches remaining" and "top four advance" live language.
+> - /ipl/qualify/{team}: replace live scenarios with a short final-result
+>   summary (final position, points, NRR, playoffs yes/no from the data file)
+>   and a note that the scenarios return when IPL 2027 starts. Keep the URLs
+>   live (no 404s, no redirects) so existing indexing isn't lost.
+> - Calculators (/ipl/calculators, /ipl/nrr): keep fully working; they're
+>   evergreen. Remove any default inputs pulled from stale live standings.
+> - Add a small site-wide banner: "IPL 2026 is complete — IPL 2027 tools
+>   return before the season." (Don't hardcode an IPL 2027 date.)
+>
+> **Step 3 — Meta/SEO hygiene:**
+> - Update titles and meta descriptions so none claim "live" or "current"
+>   while season is complete (e.g. the RCB description currently says
+>   "4 matches left").
+> - Confirm sitemap.xml and robots.txt exist and are correct; add them if
+>   missing. Add lastmod dates.
+> - Add SportsEvent or basic WebApplication JSON-LD only where accurate;
+>   skip anything that would state unverified facts.
+>
+> **Step 4 — Groundwork only (no content):**
+> - Refactor so the points table, qualification logic, and NRR logic are
+>   tournament-agnostic (tournament id, team list, playoff spots, points per
+>   win passed in), with IPL as the first config. Future targets are World
+>   Test Championship, BBL, SA20, MLC, and team head-to-head pages, so avoid
+>   IPL-specific assumptions baked into the components.
+> - Don't create those new routes yet.
+>
+> **Constraints:**
+> - Keep diffs minimal and readable; no dependency additions unless required.
+> - Run the build and any tests; fix what you break.
+> - Finish with: summary of changes, files touched, the data I need to
+>   supply, and anything you found that looks wrong.
+
+**Outcome:** the standings in `src/data/teams.json` turned out to be mock data,
+not real IPL 2026 results — `matches.json` described 8 matches while
+`teams.json` implied 100, and each row's NRR disagreed with its own runs/overs
+columns. They were deleted rather than relabelled "final". Season state moved to
+`src/config/season.json`; results to `src/data/ipl/season-2026.json`, rendered
+only when its `verified` flag is set.
+
+## 2026-09-16 — Fill the real IPL 2026 data + expand /ipl/nrr
+> go ahead and fill all the data and then do the following **Step 5 — /ipl/nrr
+> page expansion** (it will become the site's main calculator page):
+> - Keep URL. Add tabs/modes: Net Run Rate, Run Rate, Required Run Rate
+>   (target, overs remaining; cricket overs notation).
+> - Title: "Net Run Rate Calculator (NRR) — Run Rate & Required Run Rate"
+> - H1 "Net Run Rate Calculator"; add H2 sections for run rate and required
+>   run rate, a short worked example for each, and a brief FAQ (how NRR is
+>   calculated, how all-out innings count toward overs). No filler text.
+> - Make it tournament-agnostic in copy (not IPL-only); link it from the nav as
+>   "NRR Calculator".
+> - Add FAQPage JSON-LD only for the FAQ actually on the page.
+
+**Note for future sessions:** "fill all the data" could not be answered from
+model knowledge — the cutoff predates the end of the season, and inventing
+standings was explicitly out of bounds. The real final table was sourced from
+Wikipedia, cross-checked against independent reporting on the top six, and
+validated arithmetically (69 W / 69 L, one abandoned match, every points total
+= wins × 2 + no-results) before being written to the data file with its source
+recorded. Do the same for IPL 2027: source it, check it, record where it came
+from.
+
+## 2026-09-16 — Follow-ups: branching, Wrangler, soft 404
+> we will work on main as much as possible, that is this repo's convention
+>
+> are we using wrangler or CF? update all docs to say the right thing
+>
+> [on the soft-404 options] seo-correct
+
+**Outcome:** branching convention recorded in `docs/CLAUDE.md § Conventions`.
+The Wrangler question exposed a real gap — this repo had no `wrangler.jsonc`
+while 32 sibling sites under `sites/` ship one, and an earlier commit had
+wrongly documented that absence as the intended design. Both are in play:
+Pages is the platform, Wrangler is its config layer. Shipping the config with
+`not_found_handling: "404-page"` plus a prerendered `dist/404.html` fixed the
+soft 404 (unmatched paths had been returning HTTP 200 with the homepage body).
+The Astro siblings already on `404-page` mode get `dist/404.html` free from
+`src/pages/404.astro`; this Vite + React site renders it at the end of
+`scripts/prerender.mjs`.
+
