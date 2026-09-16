@@ -36,28 +36,17 @@ git push            # Cloudflare Pages auto-builds on push to main
     root is how the portfolio declares the assets directory and not-found
     handling. Build output is `dist/`; the custom domain is set in the CF
     Pages dashboard.
-  - **This repo is missing its `wrangler.jsonc`** — 32 sibling sites under
-    `sites/` ship one, this one never has. The portfolio shape is:
-
-    ```jsonc
-    {
-      "$schema": "node_modules/wrangler/config-schema.json",
-      "name": "<site-slug>",
-      "compatibility_date": "<YYYY-MM-DD>",
-      "assets": { "directory": "./dist", "not_found_handling": "..." }
-    }
-    ```
-
+  - `wrangler.jsonc` at the repo root declares the assets directory and
+    not-found handling, matching the 32 sibling sites under `sites/`.
   - No `public/_redirects`: CF's Workers Static Assets validator rejects
     `/* /index.html 200` as an infinite-loop rule (see `docs/Prompts.md`).
-  - Soft 404: with no config, unmatched paths are served the root
-    `index.html`. Verified against production — an unknown URL returns
-    HTTP 200 with the prerendered home page, and `NotFoundPage` appears
-    only once the client router takes over. Note that the sibling
-    convention (`not_found_handling: "single-page-application"`) has the
-    same characteristic, so adopting it formalises current behaviour
-    rather than fixing it. See `docs/prd.md § Phase 3` for the open
-    decision.
+  - Unmatched paths return a genuine HTTP 404 with `dist/404.html`
+    (`not_found_handling: "404-page"`), not a 200 carrying the homepage.
+    Because every route is prerendered to its own file there is no SPA
+    fallback to preserve. `dist/404.html` is emitted at the end of
+    `scripts/prerender.mjs` by rendering a path that matches no route; it
+    carries `noindex` and is deliberately absent from `routes.mjs` so it
+    never enters the sitemap. Don't add it there.
 
 ## Heading hygiene
 

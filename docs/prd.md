@@ -39,25 +39,25 @@ Shipped 2026-09-16 (`87f07bc`):
 - [x] Sitemap `changefreq` / `lastmod` reflect a finished season
 
 Open:
-- [ ] **Ship the missing `wrangler.jsonc`.** 32 sibling sites have one;
-      this repo never has. Needed regardless of which option below wins,
-      because right now nothing in the repo declares asset handling.
-- [ ] **Decide how unmatched paths should behave** (soft-404 fix). Today
-      an unknown URL returns HTTP 200 with the prerendered home page, so
-      crawlers can see unlimited duplicate home-page URLs. Two options:
+- [x] Ship the missing `wrangler.jsonc` (2026-09-16). Matches the sibling
+      shape; 32 other sites under `sites/` already had one.
+- [x] Soft-404 fixed — `not_found_handling: "404-page"` plus a
+      `dist/404.html` emitted by `scripts/prerender.mjs`. Unmatched paths
+      now return a genuine HTTP 404 with the `NotFoundPage` body instead
+      of a 200 carrying the homepage. The 404 page is marked `noindex`
+      and deliberately kept out of `routes.mjs` so it never reaches the
+      sitemap.
 
-      1. `not_found_handling: "single-page-application"` — matches the
-         other 32 sites. Keeps the 200 + home-page body, so it formalises
-         current behaviour rather than fixing the soft 404. Lowest
-         divergence, no SEO gain.
-      2. `not_found_handling: "404-page"` + a prerendered `dist/404.html`
-         — returns a real 404 with the `NotFoundPage` body. Fixes the
-         soft 404. Diverges from the portfolio convention, and makes
-         `/ipl/qualify/<bad-id>` a hard 404 instead of today's client-side
-         redirect to the table (arguably more correct).
+      Note on precedent: 5 sibling sites already use `404-page` mode, so
+      this is not a divergence — but they are all Astro, where
+      `src/pages/404.astro` compiles to `dist/404.html` for free. This is
+      a Vite + React site with a custom prerenderer, so the file is
+      rendered explicitly from a path that matches no route.
 
-      Needs an operator decision; option 2 is the SEO-correct one, option 1
-      is the consistent one.
+      Side effect to watch: `/ipl/qualify/<bad-id>` is now a hard 404
+      rather than a client-side bounce to the table. That is the correct
+      status for a URL that was never valid, but it is a behaviour change.
+
 - [ ] Delete `src/data/matches.json` — 8 fabricated matches, imported by
       nothing, contradicts the real season data
 - [ ] Off-season content, once the shape is decided (the `playoffs` block

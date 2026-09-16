@@ -105,8 +105,8 @@ builder at `~/work/projects/builder/`. Common: `make deps`, `make dev`,
 
 Cloudflare Pages, built from `main`; build output is `dist/`. Pages is
 the platform and Wrangler is its config layer — the portfolio declares
-asset handling in a root `wrangler.jsonc`. This repo does not have one
-yet (32 sibling sites do), so unmatched paths fall back to the root
-`index.html` with a 200. Custom domain is set in the CF Pages dashboard.
+asset handling in a root `wrangler.jsonc`, which this repo now has.
+Unmatched paths return a real HTTP 404 with `dist/404.html`, emitted by
+`scripts/prerender.mjs`. Custom domain is set in the CF Pages dashboard.
 See `docs/CLAUDE.md § Conventions` and `docs/prd.md § Phase 3`.
 

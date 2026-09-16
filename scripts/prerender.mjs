@@ -74,3 +74,25 @@ for (const r of routes) {
 }
 
 console.log(`[prerender] wrote ${count} static pages to dist/<route>/index.html`);
+
+// dist/404.html — served with a genuine HTTP 404 by Cloudflare, per
+// wrangler.jsonc's assets.not_found_handling. Rendered from a path that
+// matches no route, so React Router falls through to NotFoundPage. Kept out
+// of routes.mjs deliberately: it must never appear in the sitemap.
+{
+  const { html, head } = render('/__not-found__');
+  let page = template.replace('<div id="root"></div>', `<div id="root">${html}</div>`);
+  if (head.title) {
+    page = page.replace(/<title>[\s\S]*?<\/title>/, `<title>${esc(head.title)}</title>`);
+  }
+  if (head.description) {
+    page = page.replace(
+      /<meta\s+name="description"[\s\S]*?\/>/,
+      `<meta name="description" content="${esc(head.description)}" />`,
+    );
+  }
+  // Crawlers should not index the 404 body even though it is a real page.
+  page = page.replace('</head>', '  <meta name="robots" content="noindex" />\n  </head>');
+  fs.writeFileSync(path.join(DIST, '404.html'), page);
+  console.log(`  ✓ dist/404.html — ${head.title || '(no title captured)'}`);
+}

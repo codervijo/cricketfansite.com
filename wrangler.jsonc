@@ -1,0 +1,17 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "cricketfansite",
+  "compatibility_date": "2026-09-16",
+  "assets": {
+    "directory": "./dist",
+    // Every route is prerendered to its own static HTML file by
+    // scripts/prerender.mjs, so there is no SPA fallback worth preserving.
+    // "single-page-application" would serve the root index.html with a 200
+    // for any unmatched path — a soft 404 that lets crawlers see unlimited
+    // duplicate homepage URLs. "404-page" serves /404.html with a genuine
+    // HTTP 404 instead. Unlike the Astro sites in this portfolio, which get
+    // dist/404.html for free from src/pages/404.astro, this one renders it
+    // from the React NotFoundPage at the end of the prerender step.
+    "not_found_handling": "404-page"
+  }
+}
