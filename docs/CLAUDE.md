@@ -31,24 +31,33 @@ git push            # Cloudflare Pages auto-builds on push to main
   - Build path: this project's `Makefile` → `../Makefile` (parent
     workspace) → `~/work/projects/builder/` (central builder).
   - Stack: pnpm-only. No `package-lock.json` / `bun.lockb` / `yarn.lock`.
-  - Deploy: Cloudflare Pages, built from `main`. There is **no** wrangler
-    config in this repo (`wrangler.jsonc` has never existed here) — the
-    build command and output directory are set in the CF Pages dashboard.
-    Build output is `dist/`.
+  - Deploy: Cloudflare Pages, built from `main`. Both Pages and Wrangler
+    are in play: Pages is the platform, and a `wrangler.jsonc` at the repo
+    root is how the portfolio declares the assets directory and not-found
+    handling. Build output is `dist/`; the custom domain is set in the CF
+    Pages dashboard.
+  - **This repo is missing its `wrangler.jsonc`** — 32 sibling sites under
+    `sites/` ship one, this one never has. The portfolio shape is:
+
+    ```jsonc
+    {
+      "$schema": "node_modules/wrangler/config-schema.json",
+      "name": "<site-slug>",
+      "compatibility_date": "<YYYY-MM-DD>",
+      "assets": { "directory": "./dist", "not_found_handling": "..." }
+    }
+    ```
+
   - No `public/_redirects`: CF's Workers Static Assets validator rejects
     `/* /index.html 200` as an infinite-loop rule (see `docs/Prompts.md`).
-    Unmatched paths are instead served the root `index.html` by CF's
-    default asset handling — verified against production: an unknown URL
-    returns HTTP 200 with the prerendered home page, not a 404. That is a
-    soft 404, and `NotFoundPage` only appears after the client router
-    takes over. Fixing it properly means shipping a `wrangler.jsonc` with
-    `assets.not_found_handling`, which is not done yet.
-  - Branching: work on `main` as much as possible. This is a solo site
-    repo that Cloudflare Pages builds from `main`, so feature branches
-    add friction without adding safety — commit directly to `main` and
-    push when the work is complete. Don't create a branch for routine
-    work, and don't ask whether to; branch only when the operator asks
-    or when work must sit unpushed while something else ships.
+  - Soft 404: with no config, unmatched paths are served the root
+    `index.html`. Verified against production — an unknown URL returns
+    HTTP 200 with the prerendered home page, and `NotFoundPage` appears
+    only once the client router takes over. Note that the sibling
+    convention (`not_found_handling: "single-page-application"`) has the
+    same characteristic, so adopting it formalises current behaviour
+    rather than fixing it. See `docs/prd.md § Phase 3` for the open
+    decision.
 
 ## Heading hygiene
 
